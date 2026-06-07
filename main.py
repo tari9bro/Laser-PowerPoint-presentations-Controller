@@ -18,10 +18,14 @@ Right-click the tray icon to calibrate, pause, check status, or quit.
 """
 
 import sys
+import os
 import threading
 import time
 
 import cv2
+
+# Add src directory to path so modules can be imported
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
 import config
 from calibrator import Calibrator
