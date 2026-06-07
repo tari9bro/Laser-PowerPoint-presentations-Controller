@@ -15,6 +15,15 @@ Just your laser, your laptop, and Python.
 </div>
 
 ---
+## Running the App After Installation
+Every time you want to run it, you need 2 steps:
+
+```bash Step 1 — activate the virtual environment
+.venv\Scripts\activate
+
+```bash Step 2 — run the app
+
+python main.py
 
 ## 📖 What Is This?
 
