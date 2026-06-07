@@ -120,8 +120,8 @@ You can point at anything on the slide as long as you want — the app only trig
 ### Step 1 — Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/laser-ppt-controller.git
-cd laser-ppt-controller
+git clone https://github.com/YOUR_USERNAME/Laser-PowerPoint-presentations-Controller.git
+cd Laser-PowerPoint-presentations-Controller
 ```
 
 ### Step 2 — Create a virtual environment
@@ -248,7 +248,7 @@ MIN_CONTOUR_AREA = 5      # Raise this if red objects in background cause false 
 ## 🏗 Project Structure
 
 ```
-laser-ppt-controller/
+Laser-PowerPoint-presentations-Controller/
 │
 ├── main.py              ← Entry point — launch this to run the app
 ├── requirements.txt     ← Python dependencies
