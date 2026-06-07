@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🔴 Laser PPT Controller
+# 🔴 Laser PowerPoint presentations Controller
 
 **Control your PowerPoint presentations using a red laser pointer and your laptop's built-in webcam.**
 
