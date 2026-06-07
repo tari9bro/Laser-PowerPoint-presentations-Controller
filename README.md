@@ -18,13 +18,14 @@ Just your laser, your laptop, and Python.
 ## Running the App After Installation
 Every time you want to run it, you need 2 steps:
 
-```bash Step 1 — activate the virtual environment
+```bash 
+# Step 1 — activate the virtual environment
 .venv\Scripts\activate
 
-```bash Step 2 — run the app
+# Step 2 — run the app
 
 python main.py
-
+```
 ## 📖 What Is This?
 
 **Laser PowerPoint presentations Controller** is an open-source Python application that turns any **red laser pointer** into a wireless presentation remote.
