@@ -18,7 +18,7 @@ Just your laser, your laptop, and Python.
 
 ## 📖 What Is This?
 
-**Laser PPT Controller** is an open-source Python application that turns any **red laser pointer** into a wireless presentation remote.
+**Laser PowerPoint presentations Controller** is an open-source Python application that turns any **red laser pointer** into a wireless presentation remote.
 
 It uses your laptop's **built-in webcam** to watch the projection wall. When you hold the laser still in the left or right zone of the slide for **2 seconds**, the app automatically presses the arrow key to change the slide — without you touching the keyboard or any remote control.
 
