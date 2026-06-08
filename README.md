@@ -1,36 +1,26 @@
 <div align="center">
 
-# 🔴 Laser PowerPoint presentations Controller
+# 🔴 Laser PPT Controller
 
 **Control your PowerPoint presentations using a red laser pointer and your laptop's built-in webcam.**
 
-No clicker hardware. No Bluetooth dongle. No extra device.  
-Just your laser, your laptop, and Python.
+No clicker hardware. No Bluetooth dongle. No extra device.
+Just your laser, your laptop, and a double-click.
 
 [![Python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python)](https://www.python.org/)
 [![OpenCV](https://img.shields.io/badge/OpenCV-4.8%2B-green?logo=opencv)](https://opencv.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-Windows-informational?logo=windows)](https://www.microsoft.com/windows)
+[![Platform](https://img.shields.io/badge/Platform-Windows%2010%2F11-informational?logo=windows)](https://www.microsoft.com/windows)
 
 </div>
 
 ---
-## Running the App After Installation
-Every time you want to run it, you need 2 steps:
 
-```bash 
-# Step 1 — activate the virtual environment
-.venv\Scripts\activate
-
-# Step 2 — run the app
-
-python main.py
-```
 ## 📖 What Is This?
 
-**Laser PowerPoint presentations Controller** is an open-source Python application that turns any **red laser pointer** into a wireless presentation remote.
+**Laser PPT Controller** is an open-source Python application that turns any **red laser pointer** into a wireless presentation remote.
 
-It uses your laptop's **built-in webcam** to watch the projection wall. When you hold the laser still in the left or right zone of the slide for **2 seconds**, the app automatically presses the arrow key to change the slide — without you touching the keyboard or any remote control.
+It uses your laptop's **built-in webcam** to watch the projection wall. When you hold the laser still in the left or right zone of the slide for **2 seconds**, the app automatically presses the arrow key to change the slide — without touching the keyboard or any remote control.
 
 The app runs **silently in the background** as a system tray icon while PowerPoint stays in full focus on the projector.
 
@@ -71,27 +61,30 @@ The app runs **silently in the background** as a system tray icon while PowerPoi
   and aim the laser at the wall.
 ```
 
-### The Detection Pipeline
-
-Every camera frame goes through this pipeline:
-
-```
-BGR frame → HSV colorspace → Two red masks (hue 0-10 and 170-180)
-    → Merge & morphological cleanup → Find contours → Laser center (x, y)
-    → Homography correction → Zone check → Freeze timer
-    → 2 seconds still? → pyautogui.press("right" or "left")
-```
-
 ### The Freeze-to-Trigger Logic
 
-This is the key design decision that makes the app practical:
+This is the key design decision that makes the app practical in a real classroom:
 
 ```
-Laser moves freely   →  NO action  (point at content for students)
-Laser freezes 2s     →  SLIDE CHANGES  (intentional command)
+Laser moves freely   →  NO action   (point at content for students)
+Laser freezes 2s     →  SLIDE CHANGES   (intentional command)
 ```
 
-You can point at anything on the slide as long as you want — the app only triggers when the dot stops moving for exactly 2 full seconds in the left or right zone.
+You can point at anything on the slide as long as you want. The app only triggers when the dot **stops moving for exactly 2 full seconds** inside the left or right zone.
+
+### The Detection Pipeline
+
+```
+Camera frame (BGR)
+    → Convert to HSV colorspace
+    → Two red masks  (hue 0–10  and  hue 170–180)
+    → Merge masks + morphological cleanup
+    → Find contours → largest contour → laser center (x, y)
+    → Apply Homography correction  (if calibrated)
+    → Check zone: left / neutral / right
+    → FreezeDetector: still for 2 seconds?
+    → pyautogui.press("left" or "right")
+```
 
 ---
 
@@ -99,80 +92,96 @@ You can point at anything on the slide as long as you want — the app only trig
 
 | Feature | Description |
 |---|---|
-| 🔴 **Red laser detection** | HSV colour masking with morphological noise cleanup — works in typical classroom lighting |
-| ⏱ **Freeze-to-trigger** | 2-second hold required — eliminates accidental triggers while pointing at content |
-| 📐 **Homography calibration** | Corrects for any camera angle, height, or offset from the projection screen |
-| 🖥 **Silent background mode** | Runs as a system tray icon — PowerPoint always stays in focus |
-| 🟢🔴⚫ **Visual status indicator** | Tray icon changes colour to show app state at a glance |
-| ⚙️ **Single config file** | All settings in `src/config.py` — no code editing needed for normal use |
+| 🖱 **Double-click to install** | `setup.bat` handles everything — no terminal knowledge needed |
+| 🖱 **Double-click to run** | `run.bat` launches the app every time |
+| 🔴 **Red laser detection** | HSV colour masking with morphological noise cleanup |
+| ⏱ **Freeze-to-trigger** | 2-second hold required — no accidental triggers while pointing |
+| 📐 **Homography calibration** | Corrects for any camera angle, height, or offset |
+| ⏭ **Calibration is optional** | Skip it if you have no projector yet — recalibrate anytime |
+| 🖥 **Silent background mode** | Runs as a system tray icon — PowerPoint stays in focus |
+| 🟢🔴⚫ **Visual status indicator** | Tray icon colour shows app state at a glance |
+| ⚙️ **Single config file** | All settings in `src/config.py` — no deep code editing needed |
 | 🧩 **Clean modular code** | Separated into detector / calibrator / controller / tray modules |
 | 🔄 **Re-calibrate on the fly** | Right-click tray → Calibrate at any time during a session |
-| ⏸ **Pause & resume** | Temporarily disable detection without quitting the app |
+| ⏸ **Pause & resume** | Temporarily disable detection without quitting |
 
 ---
 
 ## 📦 Requirements
 
 ### Hardware
-- A laptop or desktop with a **webcam facing the projection wall**
+- A **laptop or desktop** with a webcam that faces the projection wall
 - A **red laser pointer** (any standard presentation laser)
-- A **projector** connected via HDMI
+- A **projector** connected via HDMI *(not needed for testing)*
 
 ### Software
-- **Python 3.9 or newer**
-- **Windows 10 / 11** *(primary platform — Linux/macOS may need minor adjustments for the system tray)*
-- **PowerPoint** or any presentation software that responds to arrow keys
+- **Python 3.9 or newer** — download from [python.org](https://www.python.org/downloads/)
+  - ⚠️ During installation, check **"Add Python to PATH"**
+- **Windows 10 or 11**
 
 ---
 
-## 🛠 Installation
+## 🛠 Installation — First Time Only
 
-### Step 1 — Clone the repository
+> You only do this once. After setup, just double-click `run.bat` every time.
 
+### Step 1 — Download the project
+
+Click the green **Code** button on GitHub → **Download ZIP** → extract the folder anywhere on your PC.
+
+Or if you have Git:
 ```bash
-git clone https://github.com/YOUR_USERNAME/Laser-PowerPoint-presentations-Controller.git
-cd Laser-PowerPoint-presentations-Controller
+git clone https://github.com/YOUR_USERNAME/laser-ppt-controller.git
 ```
 
-### Step 2 — Create a virtual environment
+### Step 2 — Double-click `setup.bat`
 
-```bash
-python -m venv .venv
+```
+📁 laser-ppt-controller\
+    ├── 👆 setup.bat   ← double-click this
+    ├── run.bat
+    └── ...
 ```
 
-### Step 3 — Activate the virtual environment
+`setup.bat` will automatically:
+- ✅ Check that Python is installed
+- ✅ Create a virtual environment (`.venv` folder)
+- ✅ Install all required libraries
+- ✅ Verify everything works
 
-```bash
-# Windows
-.venv\Scripts\activate
+When you see this message, setup is complete:
 
-# Linux / macOS
-source .venv/bin/activate
+```
+============================================
+  Setup complete!
+  Double-click run.bat to launch the app.
+============================================
 ```
 
-### Step 4 — Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-That's it. No system-level installs, no drivers, no external hardware setup.
+That's it. You never need to open a terminal.
 
 ---
 
-## ▶️ Running the App
+## ▶️ Running the App — Every Time
 
-```bash
-python main.py
 ```
+📁 laser-ppt-controller\
+    ├── setup.bat
+    ├── 👆 run.bat   ← double-click this every time
+    └── ...
+```
+
+Double-click **`run.bat`** — the app starts immediately.
 
 ---
 
-## 📐 First-Time Calibration
+## 📐 Calibration Window
 
-When the app starts, a **calibration window** opens automatically showing your camera feed.
+When the app starts, a **calibration window** opens showing your camera feed.
 
-**Click the 4 corners of the projection screen** in this exact order:
+### If you have a projector
+
+Click the **4 corners** of the projection screen in this order:
 
 ```
   1 ─────────── 2
@@ -183,43 +192,62 @@ When the app starts, a **calibration window** opens automatically showing your c
   4 ─────────── 3
 ```
 
-The app draws a green polygon as you click. Once all 4 corners are marked, the window closes automatically and the app moves to the **system tray**.
+The app draws a green polygon as you click. Once all 4 corners are set, the window closes automatically.
 
-> Press **ESC** to skip calibration. The app will still work but zone detection may be less accurate if the camera is at an angle to the screen.
+### If you don't have a projector right now
+
+No problem — calibration is **completely optional**.
+
+Press **S**, **ESC**, or click the **SKIP button** visible on screen:
+
+```
+┌──────────────────────────────────────────────────┐
+│  CALIBRATION — Click the 4 corners of your       │
+│  projection screen                               │
+│  → Click the TOP-LEFT corner                     │
+│                                                  │
+│         [live camera feed]                       │
+│                                                  │
+│  0 / 4 corners              ┌────────────────┐  │
+│                             │  SKIP (S/ESC)  │  │
+└─────────────────────────────└────────────────┘──┘
+```
+
+The app works without calibration. You can recalibrate any time from the tray menu.
 
 ---
 
 ## 🎮 Using the App During a Presentation
 
-### Open PowerPoint first, then run the app
+### Recommended order
 
 ```
-1. Open PowerPoint → Start slideshow (fullscreen on projector)
-2. python main.py
-3. Complete calibration
-4. App disappears to system tray — PowerPoint keeps focus
+1. Open PowerPoint → start slideshow fullscreen on projector
+2. Double-click run.bat
+3. Complete calibration (or skip)
+4. App disappears to system tray
 5. Present freely!
 ```
 
 ### Slide Control
 
-| Action | What You Do |
+| What you want | What you do |
 |---|---|
-| **Next slide ▶** | Point laser at the **right 35%** of the screen and hold still for 2 seconds |
-| **Previous slide ◀** | Point laser at the **left 35%** of the screen and hold still for 2 seconds |
-| **Point at content** | Move the laser freely — no action fires while it's moving |
+| **Next slide ▶** | Hold laser still in the **right 35%** of the screen for 2 seconds |
+| **Previous slide ◀** | Hold laser still in the **left 35%** of the screen for 2 seconds |
+| **Point at content** | Move the laser freely — nothing happens |
 
-### Tray Icon Status
+### Tray Icon — What the Colours Mean
 
-Right-click the tray icon (bottom-right corner of taskbar) at any time:
+Find the tray icon in the **bottom-right corner of the taskbar**:
 
-| Tray Icon Color | Meaning |
+| Icon Colour | Meaning |
 |---|---|
-| 🟢 Green | App running — no laser detected |
-| 🔴 Red | Laser currently detected in camera |
+| 🟢 Green | Running — no laser detected |
+| 🔴 Red | Laser currently visible in camera |
 | ⚫ Gray | Detection paused |
 
-### Tray Menu Options
+### Tray Menu — Right-Click the Icon
 
 | Option | What It Does |
 |---|---|
@@ -230,82 +258,60 @@ Right-click the tray icon (bottom-right corner of taskbar) at any time:
 
 ---
 
+## ❌ How to Close the App
+
+| Method | How |
+|---|---|
+| ✅ **Recommended** | Right-click tray icon → **❌ Quit** |
+| ✅ **Terminal** | Press `Ctrl + C` in the console window |
+| ⚠️ **Force close** | Task Manager → find `python.exe` → End Task |
+
+---
+
 ## ⚙️ Configuration
 
-All settings are in **`src/config.py`**. Open it in any text editor:
+All settings are in **`src/config.py`** — open it in Notepad or any text editor:
 
 ```python
 CAMERA_INDEX     = 0      # Built-in webcam = 0. External USB webcam = 1 or 2
 FREEZE_DURATION  = 2.0    # Seconds to hold still before action fires
-FREEZE_RADIUS    = 20     # Pixel radius of "stillness" tolerance (tremor buffer)
+FREEZE_RADIUS    = 20     # Pixel radius of stillness tolerance (tremor buffer)
 COOLDOWN         = 1.5    # Minimum seconds between two consecutive slide actions
 ZONE_SPLIT       = 0.35   # Size of left/right zones (35% of frame width each)
-MIN_CONTOUR_AREA = 5      # Raise this if red objects in background cause false triggers
+MIN_CONTOUR_AREA = 5      # Raise this if red objects trigger false positives
 ```
 
-**Common adjustments:**
+### Common adjustments
 
 | Situation | Fix |
 |---|---|
 | Slides change too slowly | Lower `FREEZE_DURATION` to `1.5` |
 | Accidental triggers while pointing | Raise `FREEZE_DURATION` to `3.0` |
-| Room has red objects causing false triggers | Raise `MIN_CONTOUR_AREA` to `15` or `20` |
+| Red objects in background cause false triggers | Raise `MIN_CONTOUR_AREA` to `15` or `20` |
 | Wrong camera opens | Change `CAMERA_INDEX` to `1` or `2` |
-| Zones feel too wide or narrow | Adjust `ZONE_SPLIT` (0.3 = smaller zones, 0.45 = larger zones) |
+| Zones feel too wide or narrow | Adjust `ZONE_SPLIT` (e.g. `0.3` or `0.45`) |
 
 ---
 
 ## 🏗 Project Structure
 
 ```
-Laser-PowerPoint-presentations-Controller/
+laser-ppt-controller/
 │
-├── main.py              ← Entry point — launch this to run the app
-├── requirements.txt     ← Python dependencies
+├── setup.bat            ← Run ONCE to install everything
+├── run.bat              ← Run EVERY TIME to launch the app
+├── main.py              ← App entry point
+├── requirements.txt     ← Python dependencies list
 ├── .gitignore
 ├── README.md
 │
 └── src/
     ├── config.py        ← All tunable settings in one place
     ├── detector.py      ← HSV laser detection + FreezeDetector class
-    ├── calibrator.py    ← Interactive Homography calibration
+    ├── calibrator.py    ← Interactive Homography calibration with SKIP button
     ├── controller.py    ← pyautogui slide key actions
     └── tray.py          ← System tray icon and right-click menu
 ```
-
----
-
-## 🔬 Technical Details
-
-### Why HSV and not BGR?
-
-RGB/BGR colour values are sensitive to lighting. The same red laser can look very different under fluorescent lights vs natural light. HSV (Hue, Saturation, Value) separates the **colour** from the **brightness**, making red detection far more consistent across environments.
-
-### Why two HSV ranges for red?
-
-The HSV hue channel is circular. Red sits at both the **start** (0–10°) and **end** (170–180°) of the wheel. Using only one range misses half of all red detections. Both masks are combined with `bitwise_or`.
-
-### What is Homography?
-
-A **Homography Matrix** is a 3×3 mathematical transform that maps one 2D plane to another. In this app:
-
-- The camera sits at an angle below the projection screen
-- A laser dot at the centre of the screen might appear at the bottom-left of the camera frame
-- The 4-corner calibration step captures the real corners of the screen in camera space
-- OpenCV computes the matrix that transforms any camera pixel into the correct screen pixel
-
-This means zone detection is accurate **regardless of camera position or angle**.
-
-### The FreezeDetector class
-
-```
-Every frame:
-  ├── No laser? → Reset anchor and timer
-  ├── Laser moved > 20px from anchor? → Reset anchor and timer  
-  └── Laser within 20px for >= 2.0 seconds? → TRIGGER ACTION
-```
-
-After an action fires, the detector resets — the presenter must move the laser and re-aim to trigger again. This prevents a single long freeze from spamming slide changes.
 
 ---
 
@@ -313,13 +319,35 @@ After an action fires, the detector resets — the presenter must move the laser
 
 | Problem | Likely Cause | Solution |
 |---|---|---|
+| `setup.bat` says Python not found | Python not installed or not in PATH | Reinstall Python, check **"Add to PATH"** |
 | Camera doesn't open | Wrong camera index | Change `CAMERA_INDEX` to `1` or `2` in `config.py` |
-| Laser not detected | Bright room / weak laser | Try dimming room lights; lower `MIN_CONTOUR_AREA` |
+| Laser not detected | Bright room or weak laser | Dim the room lights slightly |
 | Too many false positives | Red objects in background | Raise `MIN_CONTOUR_AREA` to `15`–`20` |
-| Wrong slide direction | Camera mirrored | Add `frame = cv2.flip(frame, 1)` in `detector.py` |
-| Slides don't change | PowerPoint lost focus | Click the slideshow window before using the laser |
-| Calibration feels off | Poor corner selection | Right-click tray → Calibrate again, click corners carefully |
-| App crashes on startup | Missing dependencies | Run `pip install -r requirements.txt` again |
+| Slides don't change | PowerPoint lost keyboard focus | Click the slideshow window, then test again |
+| Calibration window is confusing | No projector connected | Press **S** or click **SKIP** — calibration is optional |
+| Wrong slide direction | Camera image mirrored | Add `frame = cv2.flip(frame, 1)` in `detector.py` |
+| App crashes silently | Missing dependency | Run `setup.bat` again |
+| Tray icon not visible | Icon hidden by Windows | Click the `^` arrow in the taskbar to find it |
+
+---
+
+## 🔬 Technical Details
+
+### Why HSV instead of RGB?
+
+RGB colour values change drastically with lighting. The same red laser looks very different under fluorescent lights vs daylight. HSV separates **hue** (the actual colour) from **brightness**, making red detection consistent across environments.
+
+### Why two HSV ranges for red?
+
+The HSV hue channel is circular — red lives at both ends: **0–10°** and **170–180°**. Using only one range misses half of all detections. Both masks are merged with `bitwise_or`.
+
+### What is Homography?
+
+A **Homography Matrix** is a 3×3 mathematical transform computed by OpenCV. The camera sits below the projection screen at an angle, so a laser dot at the centre of the screen might appear at the bottom-left of the camera frame. The 4-corner calibration step lets OpenCV calculate the exact transform so every laser position maps correctly to the screen — regardless of camera angle or distance.
+
+### Why freeze instead of zone-entry?
+
+Earlier versions triggered the moment the laser entered a zone. This caused constant accidental triggers while the presenter was pointing at content near the edge of the slide. The freeze approach means **you must deliberately pause** the laser — natural pointing movement never triggers a slide change.
 
 ---
 
@@ -338,21 +366,20 @@ After an action fires, the detector resets — the presenter must move the laser
 ## 🗺 Roadmap
 
 - [ ] Green and blue laser support
-- [ ] GUI settings panel (no code editing required)
-- [ ] Click simulation for non-PowerPoint apps
-- [ ] On-screen progress indicator overlay (OBS-compatible)
-- [ ] Kotlin Compose Desktop version (distributable `.exe`)
-- [ ] Automatic camera calibration using screen corner detection
+- [ ] GUI settings panel (no config file editing needed)
+- [ ] On-screen countdown overlay visible on projector
+- [ ] Support for Google Slides and Keynote
+- [ ] Packaged `.exe` installer (no Python required)
 
 ---
 
 ## 🤝 Contributing
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you'd like to change.
+Pull requests are welcome. For major changes please open an issue first.
 
 1. Fork the repo
 2. Create a feature branch (`git checkout -b feature/your-feature`)
-3. Commit your changes (`git commit -m 'Add your feature'`)
+3. Commit your changes (`git commit -m "Add your feature"`)
 4. Push to the branch (`git push origin feature/your-feature`)
 5. Open a Pull Request
 
@@ -366,8 +393,8 @@ MIT — free to use, modify, and distribute for any purpose.
 
 ## 👤 Author
 
-Built for classroom and training centre use.  
-Developed with Python + OpenCV + pyautogui.
+Built for classroom and training centre use.
+Developed with Python, OpenCV, and pyautogui.
 
 ---
 
