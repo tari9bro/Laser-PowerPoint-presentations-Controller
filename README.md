@@ -11,7 +11,7 @@ Just your laser, your laptop, and a double-click.
 [![OpenCV](https://img.shields.io/badge/OpenCV-4.8%2B-green?logo=opencv)](https://opencv.org/)
 [![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010%2F11-informational?logo=windows)](https://www.microsoft.com/windows)
-
+![Screenshot](laser.jpg)
 </div>
 
 ---
